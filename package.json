@@ -1,0 +1,26 @@
+{
+  "name": "spltit",
+  "version": "1.0.0",
+  "description": "Backend for split app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Garima5/spltit.git"
+  },
+  "keywords": [
+    "EthGlobal",
+    "Waterloo"
+  ],
+  "author": "Garima Aggarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Garima5/spltit/issues"
+  },
+  "homepage": "https://github.com/Garima5/spltit#readme",
+  "devDependencies": {
+    "hardhat": "^2.16.0"
+  }
+}
