@@ -57,17 +57,22 @@ contract Splitit{
             _paidOutContributor);
     }
 
-     function deposit() payable external {
-
+    // function to create new Contribution to the expense
+    function createNewContribution(bytes32 expenseId) external payable {
+        Expense storage myExpense = idToExpense[expenseId];
+        require(msg.value == myExpense.initialDeposit, "NOT ENOUGH DEPOSIT");
+        require(block.timestamp <= myExpense.deadline, "ALREADY HAPPENED");
+        require(myExpense.confirmedContributors.length<myExpense.maxCapacity, "The Expense has reached max capacity");
+        for (uint8 i = 0; i < myExpense.confirmedContributors.length; i++) { 
+        // Make sure that the person has not already contributed.
+        require(myExpense.confirmedContributors[i] != msg.sender, "ALREADY CONFIRMED");
+        }
+        uint256 amountDepo = uint256(msg.value);
+        amountsDeposited[msg.sender] += amountDepo; // For the person-> If contribution already exists - then add to it, else create a new entry
+        // Later - > Add percentage of contribution
+        // Later -> paid out should be false
     }
 
-    // function to test the contract balanmce
-    function contractBalance() public view returns (uint){
-        // Function to just send value to Contract
-        // Any payable value comes from the bixes above
-        address contractAddress = address(this);
-        uint contractBalance = contractAddress.balance;
-        return contractBalance;
-    }
+
     
 }
