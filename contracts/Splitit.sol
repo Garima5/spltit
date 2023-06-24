@@ -74,6 +74,15 @@ contract Splitit{
         myExpense.confirmedContributors.push(msg.sender);
     }
 
+    // Calculate total contribution per person
+    function calculateContribution(bytes32 expenseId) public view returns (uint256){
+        Expense storage myExpense = idToExpense[expenseId];
+        uint256 totalContributors = myExpense.confirmedContributors.length;
+        require(totalContributors>0, "NO CONTRIBUTORS");
+        uint256 toPay = (myExpense.actualCost)/totalContributors;
+        return toPay; // Every person has to pay this amount
+    }
+
 
     // Getter Functions to test values
 
