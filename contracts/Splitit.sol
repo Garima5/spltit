@@ -23,23 +23,5 @@ contract Splitit{
     }
     mapping (address=> uint256) amountsDeposited; // amount deposited per person 
     mapping (bytes32 => Expense) public idToExpense;
-    // function to create new expense
-    function createNewExpense(
-        address _vendor,
-        uint256 _deadline,
-        uint256 _initialDeposit,
-        uint256 _maxCapacity,
-        uint256 actualAmount
-    ) external{
-        // later -> generate event id
-        address[] memory contributors;
-        address[] memory _paidOutContributor; 
-        bytes32 eventId = keccak256(
-        abi.encodePacked(
-            msg.sender,
-            _deadline,
-            _initialDeposit,
-            _maxCapacity
-        )
-    );
+    
 }
