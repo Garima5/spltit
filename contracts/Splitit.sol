@@ -56,5 +56,18 @@ contract Splitit{
             contributors,
             _paidOutContributor);
     }
+
+     function deposit() payable external {
+
+    }
+
+    // function to test the contract balanmce
+    function contractBalance() public view returns (uint){
+        // Function to just send value to Contract
+        // Any payable value comes from the bixes above
+        address contractAddress = address(this);
+        uint contractBalance = contractAddress.balance;
+        return contractBalance;
+    }
     
 }
