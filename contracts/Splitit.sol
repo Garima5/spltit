@@ -60,7 +60,7 @@ contract Splitit{
     // function to create new Contribution to the expense
     function createNewContribution(bytes32 expenseId) external payable {
         Expense storage myExpense = idToExpense[expenseId];
-        require(msg.value == myExpense.initialDeposit, "NOT ENOUGH DEPOSIT");
+        require(msg.value >= myExpense.initialDeposit, "NOT ENOUGH DEPOSIT");
         require(block.timestamp <= myExpense.deadline, "ALREADY HAPPENED");
         require(myExpense.confirmedContributors.length<myExpense.maxCapacity, "The Expense has reached max capacity");
         for (uint8 i = 0; i < myExpense.confirmedContributors.length; i++) { 
@@ -71,7 +71,12 @@ contract Splitit{
         amountsDeposited[msg.sender] += amountDepo; // For the person-> If contribution already exists - then add to it, else create a new entry
         // Later - > Add percentage of contribution
         // Later -> paid out should be false
+        myExpense.confirmedContributors.push(msg.sender);
     }
+
+
+    // Getter Functions to test values
+
 
 
     
