@@ -21,4 +21,6 @@ contract Splitit{
         address[] paidOutContributor; // list of contributors who have been paid theor deposit back
         // where to store each contributor's deposit value?
     }
+    mapping (address=> uint256) amountsDeposited; // amount deposited per person 
+    mapping (bytes32 => Expense) public idToExpense;
 }
