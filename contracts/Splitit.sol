@@ -21,3 +21,4 @@ contract Splitit{
         address[] paidOutContributor; // list of contributors who have been paid theor deposit back
         // where to store each contributor's deposit value?
     }
+}
