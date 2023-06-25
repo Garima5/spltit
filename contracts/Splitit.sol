@@ -54,7 +54,7 @@ contract Splitit{
         // later -> generate event id
         address[] memory contributors;
         address[] memory _paidOutContributor; 
-        bytes32 eventId = keccak256(
+        bytes32 expenseId = keccak256(
         abi.encodePacked(
             msg.sender,
             eventDataCID,
@@ -65,8 +65,8 @@ contract Splitit{
     );
     //mapping(address=> uint256) _amountsDeposited;
 
-        idToExpense[eventId]=Expense(
-            eventId,
+        idToExpense[expenseId]=Expense(
+            expenseId,
             eventDataCID,
             msg.sender,
             _vendor,
@@ -77,6 +77,17 @@ contract Splitit{
             actualAmount,
             contributors,
             _paidOutContributor);
+
+            emit NewExpenseCreated(
+            expenseId,
+             msg.sender,
+            _vendor,
+            _deadline,
+            _initialDeposit,
+        eventDataCID,
+        _maxCapacity,
+        actualAmount
+        );
     }
 
     // function to create new Contribution to the expense
@@ -94,6 +105,7 @@ contract Splitit{
         // Later - > Add percentage of contribution
         // Later -> paid out should be false
         myExpense.confirmedContributors.push(msg.sender);
+        emit NewContribution(expenseId, msg.sender, msg.value);
     }
 
     // Calculate total contribution per person
@@ -142,6 +154,7 @@ contract Splitit{
         uint256 toReturn = amountsDeposited[contributor] - amountPaidOut;
         (bool sent,) = contributor.call{value: toReturn}("");
         require(sent==true, "Money not sent back");
+        emit PayBackContributor(expenseId, contributor, amountPaidOut, toReturn);
 
     }
     function payOut(bytes32 expenseId) external payable{
@@ -170,11 +183,9 @@ contract Splitit{
 
 
         }
+        emit PayVendor(expenseId, amountPaidPerPerson);
 
     }
-
-
-
 
     
 }
