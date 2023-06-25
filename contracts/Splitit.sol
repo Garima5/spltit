@@ -94,6 +94,37 @@ contract Splitit{
 
 
     // Getter Functions to test values
+    //function payBackContributor(Expense memory myExpense ,address contributor, uint256 amountPaidOut)  public  {
+    function payBackContributor(bytes32 expenseId ,address contributor, uint256 amountPaidOut)  public  {
+        Expense storage myExpense = idToExpense[expenseId];
+        
+        // Make sure vendor is paid out first
+        require(myExpense.paidOut==true, "Vendor not paid yet");
+        // Make sure that they are in the contributor list, 
+        address confirmContributor;
+        for (uint8 i = 0; i < myExpense.confirmedContributors.length; i++) {
+        if(myExpense.confirmedContributors[i] == contributor){
+            confirmContributor = myExpense.confirmedContributors[i];
+        }
+        }
+        require(confirmContributor == contributor, "User not in contributor list");
+        //make sure they are not already in the paidout list, 
+        for (uint8 i = 0; i < myExpense.paidOutContributor.length; i++) { 
+        // Make sure that the person has not already contributed.
+            require(myExpense.paidOutContributor[i] != contributor, "ALREADY PAID OUT");
+        }
+
+        // reduce their deposit,
+        require(amountsDeposited[contributor]>=amountPaidOut, "Deposit can't be less than 0");
+        amountsDeposited[contributor] = amountsDeposited[contributor] - amountPaidOut;
+        // push them to paidOut list
+        myExpense.paidOutContributor.push(contributor);
+        //return the money,  
+        uint256 toReturn = amountsDeposited[contributor] - amountPaidOut;
+        (bool sent,) = contributor.call{value: toReturn}("");
+        require(sent==true, "Money not sent back");
+
+    }
 
 
 
