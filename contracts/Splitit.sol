@@ -6,10 +6,29 @@ pragma solidity ^0.8.6;
 // Assign Vendor
 // For each contributor - add the percentage that they are offering
 contract Splitit{
+
+    // EVENTS
+    event NewExpenseCreated(
+        bytes32 expenseId,
+        address expenseOwner,
+        address expenseVendor,
+        uint256 deadline,
+        uint256 initialDeposit,
+        string eventDataCID,
+        uint256 maxCapacity,
+        uint256 actualCost
+    );
+
+    event NewContribution(bytes32 expenseId, address contributorAddress, uint256 amountDeposited);
+
+    event PayBackContributor(bytes32 expenseId, address attendeeAddress, uint256 amountPaidOutIndividually, uint256 amountPaidback);
+
+    event PayVendor(bytes32 expenseId, uint256 amountPaidOutIndividually);
+    /////////////////////////////////////////////////////////////////////////////
     uint256 tempId = 0;
     struct Expense{
         bytes32 expenseId;
-        // string expenseDataCID;
+        string expenseDataCID; // REPLACE with IPFS STRING LATER
         address expenseOwner;
         address expenseVendor;
         uint256 deadline; // deadline upto which users can contribute
@@ -29,7 +48,8 @@ contract Splitit{
         uint256 _deadline,
         uint256 _initialDeposit,
         uint256 _maxCapacity,
-        uint256 actualAmount
+        uint256 actualAmount,
+        string calldata eventDataCID
     ) external{
         // later -> generate event id
         address[] memory contributors;
@@ -37,6 +57,7 @@ contract Splitit{
         bytes32 eventId = keccak256(
         abi.encodePacked(
             msg.sender,
+            eventDataCID,
             _deadline,
             _initialDeposit,
             _maxCapacity
@@ -46,6 +67,7 @@ contract Splitit{
 
         idToExpense[eventId]=Expense(
             eventId,
+            eventDataCID,
             msg.sender,
             _vendor,
             _deadline,
@@ -92,6 +114,7 @@ contract Splitit{
         return contractBalance;
     }
     function payBackContributor(bytes32 expenseId ,address contributor, uint256 amountPaidOut)  public  {
+        // Amount paid out is the amount sent to vendor per person
         Expense storage myExpense = idToExpense[expenseId];
         
         // Make sure vendor is paid out first
