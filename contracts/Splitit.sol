@@ -91,10 +91,6 @@ contract Splitit{
         uint contractBalance = contractAddress.balance;
         return contractBalance;
     }
-
-
-    // Getter Functions to test values
-    //function payBackContributor(Expense memory myExpense ,address contributor, uint256 amountPaidOut)  public  {
     function payBackContributor(bytes32 expenseId ,address contributor, uint256 amountPaidOut)  public  {
         Expense storage myExpense = idToExpense[expenseId];
         
@@ -125,6 +121,38 @@ contract Splitit{
         require(sent==true, "Money not sent back");
 
     }
+    function payOut(bytes32 expenseId) external payable{
+        Expense storage myExpense = idToExpense[expenseId];
+        require(msg.sender == myExpense.expenseOwner, "NOT AUTHORIZED");
+        // require deadline to have passed
+        require(block.timestamp >= myExpense.deadline, "Too EARLY");
+        // Not already paid out
+        require(!myExpense.paidOut, "ALREADY PAID");
+         // only the expense owner can make final payments
+        require(msg.sender == myExpense.expenseOwner, "MUST BE EVENT OWNER");
+        // First pay off the vendor from the contract
+        (bool sent,) = myExpense.expenseVendor.call{value: myExpense.actualCost}("");
+        require(sent, "Failed to send Ether");
+        myExpense.paidOut=true;  // pay out = True
+        // make sure the amount in contract is greater than amount to be paid in each iteration
+        // Then for each contributor - return the money, reduce their deposit, push them to paidOut list
+        uint256 amountPaidPerPerson = calculateContribution(expenseId);
+        for (uint8 i = 0; i < myExpense.confirmedContributors.length; i++){
+            uint256 cb = contractBalance();
+            // Change this require situation
+            require(cb>0, "NOT ENOUGH FUNDS TO PAY BACK");
+            payBackContributor(expenseId ,myExpense.confirmedContributors[i], amountPaidPerPerson);
+
+
+
+
+        }
+
+    }
+
+
+    // Getter Functions to test values
+    
 
 
 
