@@ -151,9 +151,6 @@ contract Splitit{
     }
 
 
-    // Getter Functions to test values
-    
-
 
 
     
