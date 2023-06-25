@@ -83,6 +83,15 @@ contract Splitit{
         return toPay; // Every person has to pay this amount
     }
 
+    // Function to Check contract Balance
+    function contractBalance() public view returns (uint){
+        // Function to just send value to Contract
+        // Any payable value comes from the bixes above
+        address contractAddress = address(this);
+        uint contractBalance = contractAddress.balance;
+        return contractBalance;
+    }
+
 
     // Getter Functions to test values
 
